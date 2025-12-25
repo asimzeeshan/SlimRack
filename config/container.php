@@ -19,6 +19,19 @@ use SlimRack\Domain\PaymentCycle\PaymentCycleRepository;
 use SlimRack\Application\Middleware\AuthMiddleware;
 use SlimRack\Application\Middleware\CsrfMiddleware;
 use SlimRack\Application\Middleware\ApiKeyMiddleware;
+use SlimRack\Application\Actions\HomeAction;
+use SlimRack\Application\Actions\Auth\LoginAction;
+use SlimRack\Application\Actions\Auth\LoginSubmitAction;
+use SlimRack\Application\Actions\Auth\LogoutAction;
+use SlimRack\Application\Actions\Machine\MachineAction;
+use SlimRack\Application\Actions\Provider\ProviderAction;
+use SlimRack\Application\Actions\Currency\CurrencyAction;
+use SlimRack\Application\Actions\Settings\SettingsAction;
+use SlimRack\Application\Actions\Api\MachineApiAction;
+use SlimRack\Application\Actions\Api\ProviderApiAction;
+use SlimRack\Application\Actions\Api\StatsApiAction;
+use SlimRack\Application\Actions\Api\CountryApiAction;
+use SlimRack\Application\Actions\Api\PaymentCycleApiAction;
 
 return [
     // Settings
@@ -145,5 +158,79 @@ return [
 
     ApiKeyMiddleware::class => function (ContainerInterface $c): ApiKeyMiddleware {
         return new ApiKeyMiddleware($c->get('settings')['api']);
+    },
+
+    // Actions
+    HomeAction::class => function (ContainerInterface $c): HomeAction {
+        return new HomeAction(
+            $c->get(Twig::class),
+            $c->get(MachineRepository::class),
+            $c->get(ProviderRepository::class),
+            $c->get(CountryRepository::class),
+            $c->get(CurrencyRepository::class),
+            $c->get(PaymentCycleRepository::class),
+            $c->get(CsrfGuard::class)
+        );
+    },
+
+    LoginAction::class => function (ContainerInterface $c): LoginAction {
+        return new LoginAction(
+            $c->get(Twig::class),
+            $c->get(SessionManager::class),
+            $c->get(CsrfGuard::class)
+        );
+    },
+
+    LoginSubmitAction::class => function (ContainerInterface $c): LoginSubmitAction {
+        return new LoginSubmitAction(
+            $c->get(SessionManager::class),
+            $c->get(CsrfGuard::class),
+            $c->get(CookieAuth::class),
+            $c->get('settings')['auth']
+        );
+    },
+
+    LogoutAction::class => function (ContainerInterface $c): LogoutAction {
+        return new LogoutAction(
+            $c->get(SessionManager::class),
+            $c->get(CookieAuth::class)
+        );
+    },
+
+    MachineAction::class => function (ContainerInterface $c): MachineAction {
+        return new MachineAction($c->get(MachineRepository::class));
+    },
+
+    ProviderAction::class => function (ContainerInterface $c): ProviderAction {
+        return new ProviderAction($c->get(ProviderRepository::class));
+    },
+
+    CurrencyAction::class => function (ContainerInterface $c): CurrencyAction {
+        return new CurrencyAction($c->get(CurrencyRepository::class));
+    },
+
+    SettingsAction::class => function (ContainerInterface $c): SettingsAction {
+        return new SettingsAction($c->get(SessionManager::class));
+    },
+
+    // API Actions
+    MachineApiAction::class => function (ContainerInterface $c): MachineApiAction {
+        return new MachineApiAction($c->get(MachineRepository::class));
+    },
+
+    ProviderApiAction::class => function (ContainerInterface $c): ProviderApiAction {
+        return new ProviderApiAction($c->get(ProviderRepository::class));
+    },
+
+    StatsApiAction::class => function (ContainerInterface $c): StatsApiAction {
+        return new StatsApiAction($c->get(MachineRepository::class));
+    },
+
+    CountryApiAction::class => function (ContainerInterface $c): CountryApiAction {
+        return new CountryApiAction($c->get(CountryRepository::class));
+    },
+
+    PaymentCycleApiAction::class => function (ContainerInterface $c): PaymentCycleApiAction {
+        return new PaymentCycleApiAction($c->get(PaymentCycleRepository::class));
     },
 ];
