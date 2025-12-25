@@ -1,0 +1,70 @@
+<!-- Provider Modal -->
+<div class="modal fade" id="providerModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Manage Providers</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Provider List -->
+                <div id="providerList" class="mb-4">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Website</th>
+                                <th>Control Panel</th>
+                                <th>Machines</th>
+                                <th width="100">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="providerTableBody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Add/Edit Provider Form -->
+                <div class="card bg-light">
+                    <div class="card-header">
+                        <h6 class="mb-0" id="providerFormTitle">Add New Provider</h6>
+                    </div>
+                    <div class="card-body">
+                        <form id="providerForm">
+                            <input type="hidden" name="provider_id" id="providerId">
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="providerName" class="form-label">Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="providerName" name="name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="providerWebsite" class="form-label">Website</label>
+                                    <input type="url" class="form-control" id="providerWebsite" name="website" placeholder="https://...">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="providerCpName" class="form-label">Control Panel Name</label>
+                                    <input type="text" class="form-control" id="providerCpName" name="control_panel_name" placeholder="e.g., SolusVM">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="providerCpUrl" class="form-label">Control Panel URL</label>
+                                    <input type="url" class="form-control" id="providerCpUrl" name="control_panel_url" placeholder="https://...">
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-outline-secondary me-2" id="cancelProviderEdit" style="display:none;">Cancel</button>
+                                <button type="submit" class="btn btn-primary" id="providerSubmit">
+                                    <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                                    <span class="btn-text">Add Provider</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

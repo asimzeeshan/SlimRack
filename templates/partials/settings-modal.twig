@@ -1,0 +1,85 @@
+<!-- Settings Modal -->
+<div class="modal fade" id="settingsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Settings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Theme -->
+                <div class="mb-4">
+                    <label class="form-label">Theme</label>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="theme" id="themeLight" value="light" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="themeLight">
+                            <i class="bi bi-sun me-1"></i>Light
+                        </label>
+
+                        <input type="radio" class="btn-check" name="theme" id="themeDark" value="dark" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="themeDark">
+                            <i class="bi bi-moon me-1"></i>Dark
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Page Length -->
+                <div class="mb-4">
+                    <label for="settingsPageLength" class="form-label">Items per page</label>
+                    <select class="form-select" id="settingsPageLength">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+
+                <!-- Currency Rates -->
+                <div class="mb-3">
+                    <label class="form-label">Currency Rates (1 USD =)</label>
+                    <div id="currencyRatesList">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="btnAddCurrency">
+                        <i class="bi bi-plus me-1"></i>Add Currency
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Currency Modal -->
+<div class="modal fade" id="addCurrencyModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Currency</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="addCurrencyForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="newCurrencyCode" class="form-label">Currency Code</label>
+                        <input type="text" class="form-control text-uppercase" id="newCurrencyCode" name="currency_code"
+                               maxlength="3" pattern="[A-Za-z]{3}" required placeholder="e.g., EUR">
+                        <div class="form-text">3-letter ISO code</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newCurrencyRate" class="form-label">Rate (vs USD)</label>
+                        <input type="number" class="form-control" id="newCurrencyRate" name="rate"
+                               min="0.0001" step="0.0001" required placeholder="e.g., 0.92">
+                        <div class="form-text">1 USD = ? of this currency</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Currency</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

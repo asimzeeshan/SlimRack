@@ -1,0 +1,193 @@
+{% extends 'layout/base.twig' %}
+
+{% block title %}Dashboard - {{ app.name }}{% endblock %}
+
+{% block content %}
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-1 text-white-50">Total Machines</h6>
+                        <h2 class="card-title mb-0" id="statTotalMachines">{{ statistics.visible_machines }}</h2>
+                    </div>
+                    <i class="bi bi-server fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-1 text-white-50">Monthly Cost (USD)</h6>
+                        <h2 class="card-title mb-0" id="statMonthlyCost">${{ statistics.monthly_cost|number_format(2) }}</h2>
+                    </div>
+                    <i class="bi bi-currency-dollar fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-1 text-white-50">Providers</h6>
+                        <h2 class="card-title mb-0">{{ providers|length }}</h2>
+                    </div>
+                    <i class="bi bi-building fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-dark">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-1">Countries</h6>
+                        <h2 class="card-title mb-0">{{ statistics.by_country|length }}</h2>
+                    </div>
+                    <i class="bi bi-globe fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#machineModal" id="btnAddMachine">
+            <i class="bi bi-plus-lg me-1"></i>Add Machine
+        </button>
+        <button type="button" class="btn btn-outline-danger ms-2" id="btnDeleteSelected" disabled>
+            <i class="bi bi-trash me-1"></i>Delete Selected
+        </button>
+    </div>
+    <div>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="showHidden">
+            <label class="form-check-label" for="showHidden">Show Hidden</label>
+        </div>
+    </div>
+</div>
+
+<!-- Machines Table -->
+<div class="card">
+    <div class="card-body">
+        <table id="machinesTable" class="table table-striped table-hover" style="width:100%">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectAll"></th>
+                    <th>Label</th>
+                    <th>Location</th>
+                    <th>Specs</th>
+                    <th>Provider</th>
+                    <th>Price</th>
+                    <th>Due Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for machine in machines %}
+                <tr data-id="{{ machine.machine_id }}" class="{{ machine.is_hidden ? 'table-secondary' : '' }}">
+                    <td><input type="checkbox" class="machine-checkbox" value="{{ machine.machine_id }}"></td>
+                    <td>
+                        <strong>{{ machine.label }}</strong>
+                        {% if machine.is_nat %}<span class="badge bg-info ms-1">NAT</span>{% endif %}
+                        {% if machine.ip_address %}
+                        <br><small class="text-muted">{{ machine.ip_address }}</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if machine.country_code %}
+                        <span class="fi fi-{{ machine.country_code|lower }} me-1"></span>
+                        {% endif %}
+                        {{ machine.city_name ?? '' }}
+                        {% if machine.country_name %}
+                        <br><small class="text-muted">{{ machine.country_name }}</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <small>
+                            {% if machine.cpu_core %}{{ machine.cpu_core }} vCPU{% endif %}
+                            {% if machine.memory %} / {{ (machine.memory / 1024)|number_format(1) }} GB RAM{% endif %}
+                            {% if machine.disk_space %}<br>{{ machine.disk_space }} GB {{ machine.disk_type ?? 'Disk' }}{% endif %}
+                        </small>
+                    </td>
+                    <td>
+                        {% if machine.provider_name %}
+                        <a href="{{ machine.provider_website }}" target="_blank" class="text-decoration-none">
+                            {{ machine.provider_name }}
+                        </a>
+                        {% else %}
+                        <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ machine.currency_code }} {{ (machine.price / 100)|number_format(2) }}
+                        <br><small class="text-muted">{{ machine.payment_cycle_name ?? '' }}</small>
+                    </td>
+                    <td>
+                        {% if machine.due_date %}
+                        {% set due = date(machine.due_date) %}
+                        {% set today = date() %}
+                        {% set diff = due.diff(today).days %}
+                        <span class="badge {{ diff <= 7 ? 'bg-danger' : (diff <= 30 ? 'bg-warning text-dark' : 'bg-success') }}">
+                            {{ machine.due_date }}
+                        </span>
+                        {% else %}
+                        <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <button type="button" class="btn btn-outline-primary btn-edit" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-success btn-renew" title="Renew" {{ not machine.due_date ? 'disabled' : '' }}>
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-toggle-hidden" title="{{ machine.is_hidden ? 'Show' : 'Hide' }}">
+                                <i class="bi bi-{{ machine.is_hidden ? 'eye' : 'eye-slash' }}"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-danger btn-delete" title="Delete">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Machine Modal -->
+{% include 'partials/machine-modal.twig' %}
+
+<!-- Provider Modal -->
+{% include 'partials/provider-modal.twig' %}
+
+<!-- Settings Modal -->
+{% include 'partials/settings-modal.twig' %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Pass data to JavaScript
+    window.SlimRack.providers = {{ providers|json_encode|raw }};
+    window.SlimRack.countries = {{ countries|json_encode|raw }};
+    window.SlimRack.currencies = {{ currencies|json_encode|raw }};
+    window.SlimRack.paymentCycles = {{ paymentCycles|json_encode|raw }};
+</script>
+<script src="/assets/js/machine.js"></script>
+<script src="/assets/js/provider.js"></script>
+<script src="/assets/js/settings.js"></script>
+{% endblock %}
