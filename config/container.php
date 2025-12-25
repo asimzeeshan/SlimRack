@@ -16,6 +16,9 @@ use SlimRack\Domain\Provider\ProviderRepository;
 use SlimRack\Domain\Currency\CurrencyRepository;
 use SlimRack\Domain\Country\CountryRepository;
 use SlimRack\Domain\PaymentCycle\PaymentCycleRepository;
+use SlimRack\Application\Middleware\AuthMiddleware;
+use SlimRack\Application\Middleware\CsrfMiddleware;
+use SlimRack\Application\Middleware\ApiKeyMiddleware;
 
 return [
     // Settings
@@ -125,5 +128,22 @@ return [
 
     PaymentCycleRepository::class => function (ContainerInterface $c): PaymentCycleRepository {
         return new PaymentCycleRepository($c->get(Connection::class));
+    },
+
+    // Middleware
+    AuthMiddleware::class => function (ContainerInterface $c): AuthMiddleware {
+        return new AuthMiddleware(
+            $c->get(SessionManager::class),
+            $c->get(CookieAuth::class),
+            $c->get('settings')['auth']
+        );
+    },
+
+    CsrfMiddleware::class => function (ContainerInterface $c): CsrfMiddleware {
+        return new CsrfMiddleware($c->get(CsrfGuard::class));
+    },
+
+    ApiKeyMiddleware::class => function (ContainerInterface $c): ApiKeyMiddleware {
+        return new ApiKeyMiddleware($c->get('settings')['api']);
     },
 ];
