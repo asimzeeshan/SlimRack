@@ -26,6 +26,25 @@ SlimRack is a recreation of [Carotu](https://github.com/seikan/carotu) using the
 
 ## Installation
 
+### Option 1: Docker (Recommended)
+
+```bash
+git clone https://github.com/asimzeeshan/SlimRack.git
+cd SlimRack
+cp .env.example .env
+docker compose up -d
+```
+
+Visit `http://localhost:8080/install/` to complete setup.
+
+For development with live editing:
+```bash
+docker compose -f docker-compose.dev.yml up -d
+composer install
+```
+
+### Option 2: Manual Installation
+
 1. Clone the repository:
    ```bash
    git clone https://github.com/asimzeeshan/SlimRack.git

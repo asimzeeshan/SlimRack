@@ -1,0 +1,24 @@
+# Development docker-compose - mounts local directory for live editing
+# Usage: docker compose -f docker-compose.dev.yml up -d
+
+services:
+  slimrack:
+    image: php:8.4-apache
+    container_name: slimrack-dev
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    command: >
+      bash -c "
+      apt-get update && apt-get install -y git unzip libzip-dev libsqlite3-dev &&
+      docker-php-ext-install pdo pdo_sqlite pdo_mysql zip &&
+      a2enmod rewrite headers &&
+      sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf &&
+      sed -i '/<Directory \\/var\\/www\\/>/,/<\\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf &&
+      chown -R www-data:www-data /var/www/html/storage &&
+      chmod -R 775 /var/www/html/storage &&
+      apache2-foreground
+      "

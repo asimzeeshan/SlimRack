@@ -1,0 +1,31 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Development
+.env
+.env.example
+*.md
+docs/
+
+# Storage (will be mounted as volume)
+storage/database/*.sqlite
+storage/logs/*
+
+# Dependencies (will be installed during build)
+vendor/
+
+# Installation (remove after setup)
+install/
