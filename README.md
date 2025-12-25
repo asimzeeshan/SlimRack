@@ -85,7 +85,6 @@ This project is a recreation of [Carotu](https://github.com/seikan/carotu) by [s
 
 **Asim Zeeshan**
 - LinkedIn: [linkedin.com/in/asimzeeshan](https://www.linkedin.com/in/asimzeeshan)
-- Email: 
 - GitHub: [github.com/asimzeeshan](https://github.com/asimzeeshan)
 
 ## License
