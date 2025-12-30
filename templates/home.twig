@@ -71,8 +71,8 @@
     </div>
     <div>
         <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="showHidden">
-            <label class="form-check-label" for="showHidden">Show Hidden</label>
+            <input class="form-check-input" type="checkbox" id="showInactive">
+            <label class="form-check-label" for="showInactive">Show Inactive</label>
         </div>
     </div>
 </div>
@@ -99,6 +99,7 @@
                     <td><input type="checkbox" class="machine-checkbox" value="{{ machine.machine_id }}"></td>
                     <td>
                         <strong>{{ machine.label }}</strong>
+                        {% if machine.is_hidden %}<span class="badge badge-inactive ms-1">Inactive</span>{% endif %}
                         {% if machine.is_nat %}<span class="badge bg-info ms-1">NAT</span>{% endif %}
                         {% if machine.ip_address %}
                         <br><small class="text-muted">{{ machine.ip_address }}</small>
@@ -153,8 +154,8 @@
                             <button type="button" class="btn btn-outline-success btn-renew" title="Renew" {{ not machine.due_date ? 'disabled' : '' }}>
                                 <i class="bi bi-arrow-clockwise"></i>
                             </button>
-                            <button type="button" class="btn btn-outline-secondary btn-toggle-hidden" title="{{ machine.is_hidden ? 'Show' : 'Hide' }}">
-                                <i class="bi bi-{{ machine.is_hidden ? 'eye' : 'eye-slash' }}"></i>
+                            <button type="button" class="btn btn-outline-secondary btn-toggle-status" title="{{ machine.is_hidden ? 'Activate' : 'Deactivate' }}">
+                                <i class="bi bi-{{ machine.is_hidden ? 'toggle-off' : 'toggle-on' }}"></i>
                             </button>
                             <button type="button" class="btn btn-outline-danger btn-delete" title="Delete">
                                 <i class="bi bi-trash"></i>

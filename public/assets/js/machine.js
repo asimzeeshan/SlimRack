@@ -46,6 +46,15 @@
             autoclose: true,
             todayHighlight: true
         });
+
+        // Status toggle label update
+        $('#machineIsActive').on('change', function() {
+            const isActive = $(this).prop('checked');
+            $('#statusLabel').text(isActive ? 'Active' : 'Inactive');
+            $('.status-toggle-container')
+                .toggleClass('bg-light', isActive)
+                .toggleClass('bg-warning-subtle', !isActive);
+        });
     }
 
     // Initialize event handlers
@@ -79,11 +88,11 @@
             renewMachine(id, row);
         });
 
-        // Toggle hidden button
-        $('#machinesTable').on('click', '.btn-toggle-hidden', function() {
+        // Toggle status button (active/inactive)
+        $('#machinesTable').on('click', '.btn-toggle-status', function() {
             const row = $(this).closest('tr');
             const id = row.data('id');
-            toggleHidden(id, row);
+            toggleStatus(id, row);
         });
 
         // Select all checkbox
@@ -105,12 +114,13 @@
             showBatchDeleteConfirm(ids);
         });
 
-        // Show hidden toggle
-        $('#showHidden').on('change', function() {
+        // Show inactive toggle
+        $('#showInactive').on('change', function() {
+            const showInactive = $(this).prop('checked');
             dataTable.rows().every(function() {
                 const row = this.node();
                 if ($(row).hasClass('table-secondary')) {
-                    $(row).toggle(this.checked);
+                    $(row).toggle(showInactive);
                 }
             });
         });
@@ -159,6 +169,8 @@
         $('#machineForm')[0].reset();
         $('#machineId').val('');
         $('#machineCurrency').val('USD');
+        // Reset status toggle to Active
+        $('#machineIsActive').prop('checked', true).trigger('change');
     }
 
     // Edit machine
@@ -193,7 +205,8 @@
                 $('#machinePaymentCycle').val(m.payment_cycle_id);
                 $('#machineDueDate').val(m.due_date);
                 $('#machineNotes').val(m.notes);
-                $('#machineIsHidden').prop('checked', m.is_hidden == 1);
+                // Status toggle: is_hidden=1 means Inactive, so we invert for Active toggle
+                $('#machineIsActive').prop('checked', m.is_hidden != 1).trigger('change');
 
                 $('#machineModal').modal('show');
             }
@@ -214,6 +227,8 @@
 
         const formData = new FormData($('#machineForm')[0]);
         const data = Object.fromEntries(formData.entries());
+        // Convert status toggle to is_hidden: Active=checked means is_hidden=0
+        data.is_hidden = $('#machineIsActive').prop('checked') ? '0' : '1';
 
         const isEdit = currentMachineId !== null;
         const url = isEdit ? `/ajax/machines/${currentMachineId}` : '/ajax/machines';
@@ -330,27 +345,29 @@
         });
     }
 
-    // Toggle hidden
-    function toggleHidden(id, row) {
+    // Toggle status (active/inactive)
+    function toggleStatus(id, row) {
         SlimRack.ajax({
             url: `/ajax/machines/${id}/toggle-hidden`,
             method: 'POST'
         }).done(function(response) {
             if (response.success) {
-                const isHidden = response.data.is_hidden;
-                row.toggleClass('table-secondary', isHidden);
-                row.find('.btn-toggle-hidden i')
-                    .removeClass('bi-eye bi-eye-slash')
-                    .addClass(isHidden ? 'bi-eye' : 'bi-eye-slash');
-                SlimRack.toast(response.data.message);
+                const isInactive = response.data.is_hidden;
+                row.toggleClass('table-secondary', isInactive);
+                row.find('.btn-toggle-status')
+                    .attr('title', isInactive ? 'Activate' : 'Deactivate');
+                row.find('.btn-toggle-status i')
+                    .removeClass('bi-toggle-on bi-toggle-off')
+                    .addClass(isInactive ? 'bi-toggle-off' : 'bi-toggle-on');
+                SlimRack.toast(isInactive ? 'Machine marked as inactive' : 'Machine activated');
 
-                // Hide row if "Show Hidden" is not checked
-                if (isHidden && !$('#showHidden').prop('checked')) {
+                // Hide row if "Show Inactive" is not checked
+                if (isInactive && !$('#showInactive').prop('checked')) {
                     row.hide();
                 }
             }
         }).fail(function() {
-            SlimRack.toast('Failed to toggle visibility', 'danger');
+            SlimRack.toast('Failed to toggle status', 'danger');
         });
     }
 

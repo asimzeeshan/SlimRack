@@ -279,8 +279,8 @@ function handleAdminStep(): bool|string
     $confirmPassword = $_POST['admin_password_confirm'] ?? '';
 
     // Validate username
-    if (!preg_match('/^[a-zA-Z0-9]{6,20}$/', $username)) {
-        return 'Username must be 6-20 alphanumeric characters';
+    if (!preg_match('/^[a-zA-Z0-9]{4,20}$/', $username)) {
+        return 'Username must be 4-20 alphanumeric characters';
     }
 
     // Validate password
@@ -550,8 +550,8 @@ $canProceed = allRequirementsPassed($requirements);
                     <div class="mb-3">
                         <label for="adminUsername" class="form-label">Username</label>
                         <input type="text" class="form-control" id="adminUsername" name="admin_username"
-                               pattern="[a-zA-Z0-9]{6,20}" required>
-                        <div class="form-text">6-20 alphanumeric characters</div>
+                               pattern="[a-zA-Z0-9]{4,20}" required>
+                        <div class="form-text">4-20 alphanumeric characters</div>
                     </div>
                     <div class="mb-3">
                         <label for="adminPassword" class="form-label">Password</label>

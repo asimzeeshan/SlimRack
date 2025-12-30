@@ -188,3 +188,50 @@ body {
     font-family: 'Courier New', Courier, monospace;
     font-size: 0.9em;
 }
+
+/* Status Toggle Styling */
+.status-toggle-container {
+    transition: background-color 0.3s ease;
+}
+
+.form-switch.form-switch-lg .form-check-input {
+    width: 3em;
+    height: 1.5em;
+    cursor: pointer;
+}
+
+.form-switch.form-switch-lg .form-check-label {
+    padding-left: 0.5rem;
+    min-width: 60px;
+}
+
+.status-toggle-container.bg-warning-subtle {
+    background-color: #fff3cd !important;
+    border-color: #ffc107 !important;
+}
+
+/* Inactive Badge */
+.badge-inactive {
+    background-color: #6c757d;
+    font-size: 0.7em;
+    vertical-align: middle;
+}
+
+/* Inactive row styling */
+#machinesTable tbody tr.table-secondary {
+    opacity: 0.6;
+}
+
+#machinesTable tbody tr.table-secondary:hover {
+    opacity: 0.8;
+}
+
+/* Dark mode status toggle */
+[data-bs-theme="dark"] .status-toggle-container.bg-light {
+    background-color: #2b3035 !important;
+}
+
+[data-bs-theme="dark"] .status-toggle-container.bg-warning-subtle {
+    background-color: #332701 !important;
+    border-color: #665200 !important;
+}
