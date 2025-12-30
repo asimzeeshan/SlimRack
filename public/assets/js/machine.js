@@ -31,6 +31,11 @@
                 zeroRecords: 'No matching machines found'
             }
         });
+
+        // Hide inactive rows on initial load (unless toggle is checked)
+        if (!$('#showInactive').prop('checked')) {
+            $('#machinesTable tbody tr.table-secondary').hide();
+        }
     }
 
     // Initialize machine form

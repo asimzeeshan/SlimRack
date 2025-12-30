@@ -84,6 +84,22 @@ return [
             'debug' => $appSettings['debug'],
         ]);
 
+        // Add session data as global (for theme, page_length, etc.)
+        // Note: This creates a lazy-loading session accessor
+        $session = $c->get(SessionManager::class);
+        $twig->getEnvironment()->addGlobal('session', new class($session) {
+            private SessionManager $session;
+            public function __construct(SessionManager $session) {
+                $this->session = $session;
+            }
+            public function __get(string $name): mixed {
+                return $this->session->get($name);
+            }
+            public function __isset(string $name): bool {
+                return $this->session->has($name);
+            }
+        });
+
         return $twig;
     },
 
