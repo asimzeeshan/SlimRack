@@ -230,11 +230,14 @@ class MachineRepository
         $visibleMachines = $this->count(false);
 
         // Monthly cost (converted to USD using rates)
+        // Price is stored in cents, divide by 100 to get dollars
+        // Then divide by payment cycle months to get monthly cost
+        // Then convert to USD using currency rates (rate is stored as rate * 10000)
         $sql = "
             SELECT
                 SUM(
                     CASE
-                        WHEN pc.month > 0 THEN (m.price / pc.month) * (10000.0 / COALESCE(cr.rate, 10000))
+                        WHEN pc.month > 0 THEN (m.price / 100.0 / pc.month) * (10000.0 / COALESCE(cr.rate, 10000))
                         ELSE 0
                     END
                 ) as monthly_cost

@@ -44,9 +44,9 @@ class LoginSubmitAction
             return $this->redirectWithError($response, 'Please enter username and password.');
         }
 
-        // Validate username format (6-20 alphanumeric)
-        if (!preg_match('/^[a-zA-Z0-9]{6,20}$/', $username)) {
-            return $this->redirectWithError($response, 'Invalid username format.');
+        // Validate username format (4-20 alphanumeric)
+        if (!preg_match('/^[a-zA-Z0-9]{4,20}$/', $username)) {
+            return $this->redirectWithError($response, 'Username must be 4-20 alphanumeric characters.');
         }
 
         // Check credentials
