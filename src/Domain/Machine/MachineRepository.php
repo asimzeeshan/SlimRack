@@ -275,6 +275,7 @@ class MachineRepository
         return [
             'total_machines' => $totalMachines,
             'visible_machines' => $visibleMachines,
+            'inactive_machines' => $totalMachines - $visibleMachines,
             'monthly_cost' => $monthlyCost,
             'by_provider' => $byProvider,
             'by_country' => $byCountry,
