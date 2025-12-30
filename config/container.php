@@ -34,6 +34,11 @@ use SlimRack\Application\Actions\Api\CountryApiAction;
 use SlimRack\Application\Actions\Api\PaymentCycleApiAction;
 
 return [
+    // View alias for TwigMiddleware::createFromContainer() compatibility
+    'view' => function (ContainerInterface $c): Twig {
+        return $c->get(Twig::class);
+    },
+
     // Settings
     'settings' => function (): array {
         return require CONFIG_PATH . '/settings.php';
